@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace SaldoFlex.API.Features.Shared.Utils;
+namespace SaldoFlex.API.Shared.Utils;
 
 public class PasswordUtil
 {

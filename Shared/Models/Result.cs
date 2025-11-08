@@ -1,4 +1,4 @@
-﻿namespace SaldoFlex.API.Features.Shared.Models
+﻿namespace SaldoFlex.API.Shared.Models
 {
     public class Result
     {

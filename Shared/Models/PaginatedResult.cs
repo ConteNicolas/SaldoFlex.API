@@ -1,4 +1,6 @@
-﻿namespace SaldoFlex.API.Features.Shared.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace SaldoFlex.API.Shared.Models
 {
 
     public class PaginatedResult<T>
@@ -38,11 +40,8 @@
 
         public static async Task<PaginatedResult<T>> CreateAsync(IQueryable<T> source, int currentPage, int pageSize, CancellationToken cancellationToken)
         {
-            //var totalItems = await source.CountAsync(cancellationToken);
-            //var data = await source.Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
-
-            var totalItems = source.Count();
-            var data = new List<T>();
+            var totalItems = await source.CountAsync(cancellationToken);
+            var data = await source.Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
 
             return new PaginatedResult<T>(data, totalItems, currentPage, pageSize, cancellationToken);
         }
