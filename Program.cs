@@ -43,7 +43,10 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication()
     .UseAuthorization()
-    .UseFastEndpoints()
+    .UseFastEndpoints(opt =>
+    {
+        opt.Endpoints.RoutePrefix = "api";
+    })
     .UseSwaggerGen();
 
 app.Run();
