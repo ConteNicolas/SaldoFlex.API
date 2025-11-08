@@ -3,13 +3,18 @@ using SaldoFlex.API.Domain;
 
 namespace SaldoFlex.API.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
-    protected ApplicationDbContext() { }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        base.OnModelCreating(modelBuilder);
+    }
     
     //Commons
+    public DbSet<User> Users { get; set; }
     public DbSet<Currency> Currencies { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Setting> Settings { get; set; }
