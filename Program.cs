@@ -8,6 +8,12 @@ using SaldoFlex.API.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddDbContext<ApplicationDbContext>(opt =>
+{
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
 builder.Services.Configure<JwtCreationOptions>(opt =>
 {
     opt.SigningKey = builder.Configuration["JWT:Key"];
@@ -26,18 +32,12 @@ builder.Services
         opt.DocumentSettings = b =>
         {
             b.Title = "Saldo Flex";
-            b.Description = "Saldo flex es una plataforma que te permite gestionar de forma eficiente tu dinero. El como lo seleccionas vos a traves de nuestro sistema flexible."
+            b.Description = "Saldo flex es una plataforma que te permite gestionar de forma eficiente tu dinero. El como lo seleccionas vos a traves de nuestro sistema flexible.";
             b.Version = "v1";
         };
     });
 
-builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-{
-    opt.UseNpgsql();
-});
-
 var app = builder.Build();
-
 
 app.UseHttpsRedirection();
 
