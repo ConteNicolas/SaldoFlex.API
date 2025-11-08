@@ -31,14 +31,9 @@ public class GetAllCurrenciesQueryHandler : IRequestHandler<GetAllCurrenciesQuer
             .Where(x => request.Code == null || x.Code == request.Code)
             .Where(x => request.Description == null || x.Description == request.Description)
             .Where(x => request.Symbol == null || x.Symbol == request.Symbol)
-            .Select(x => MapToResponse(x))
+            .Select(x => new GetAllCurrenciesResponse(x.Id, x.Code, x.Symbol, x.Description))
             .ToPaginatedResultAsync(request.Page, request.PageSize, cancellationToken);
 
         return Result.Success(currencies);
-    }
-
-    private GetAllCurrenciesResponse MapToResponse(Currency currency)
-    {
-        return new GetAllCurrenciesResponse(currency.Id, currency.Code, currency.Symbol, currency.Description);
     }
 }

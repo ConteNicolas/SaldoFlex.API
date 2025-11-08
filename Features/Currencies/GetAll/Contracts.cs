@@ -4,7 +4,7 @@ namespace SaldoFlex.API.Features.Currencies.GetAll;
 
 public record GetAllCurrenciesRequest(
     int Page = 1,
-    [FromQuery(Name = "page-size")] int PageSize = 10,
+    int PageSize = 10,
     string? Code = null,
     string? Description = null,
     string? Symbol = null
