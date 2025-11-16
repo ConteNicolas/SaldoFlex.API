@@ -27,6 +27,7 @@ public class DeleteCurrencyEndpoint : Endpoint<DeleteCurrencyRequest>
         if (result.IsFailure)
         {
             await Send.ResponseAsync(result.Error, StatusCodes.Status400BadRequest, cancellationToken);
+            return;
         }
 
         await Send.NoContentAsync();

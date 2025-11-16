@@ -26,6 +26,7 @@ public class UpdateCurrencyEndpoint : Endpoint<UpdateCurrencyRequest>
         if (result.IsFailure)
         {
             await Send.ResponseAsync(result.Error, StatusCodes.Status400BadRequest, cancellationToken);
+            return;
         }
 
         await Send.OkAsync(result.Value, cancellationToken);
