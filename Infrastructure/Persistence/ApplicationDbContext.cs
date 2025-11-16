@@ -25,5 +25,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     // FinancialScenes
     public DbSet<FinancialScene> FinancialScenes { get; set; }
     public DbSet<FinancialSceneGroup> FinancialSceneGroups { get; set; }
-    public DbSet<FinancialSceneTransaction> FinancialSceneTransactions { get; set; }
+    public DbSet<FinancialSceneIncome> FinancialSceneIncomes { get; set; }
+    public DbSet<FinancialSceneExpense> FinancialSceneExpenses { get; set; }
 }
