@@ -2,15 +2,16 @@
 
 namespace SaldoFlex.API.Domain;
 
-public enum FinancialSceneTransactionStateEnum
+public enum FinancialSceneExpenseStateEnum
 {
     Unpaid,
-    Paid,
-    InProgress
+    Paid
 }
 
-public class FinancialSceneTransaction : BaseEntity
+public class FinancialSceneExpense : BaseEntity
 {
+    public string Name { get; set; }
+
     public Guid GroupId { get; set; }
     public virtual FinancialSceneGroup Group { get; set; }
 
@@ -20,5 +21,5 @@ public class FinancialSceneTransaction : BaseEntity
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
     public double Amount { get; set; }
-    public FinancialSceneTransactionStateEnum State { get; set; }
+    public FinancialSceneExpenseStateEnum State { get; set; }
 }
