@@ -33,6 +33,7 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     FinancialSceneId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -78,7 +79,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
                     FinancialPlanId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -116,10 +116,32 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FinancialSceneTransactions",
+                name: "FinancialSceneIncomes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
+                    FinancialSceneId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FinancialSceneIncomes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FinancialSceneIncomes_FinancialScenes_FinancialSceneId",
+                        column: x => x.FinancialSceneId,
+                        principalTable: "FinancialScenes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FinancialSceneExpenses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     GroupId = table.Column<Guid>(type: "uuid", nullable: false),
                     CurrencyId = table.Column<Guid>(type: "uuid", nullable: false),
                     Amount = table.Column<double>(type: "double precision", nullable: false),
@@ -129,15 +151,15 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FinancialSceneTransactions", x => x.Id);
+                    table.PrimaryKey("PK_FinancialSceneExpenses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FinancialSceneTransactions_Currencies_CurrencyId",
+                        name: "FK_FinancialSceneExpenses_Currencies_CurrencyId",
                         column: x => x.CurrencyId,
                         principalTable: "Currencies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FinancialSceneTransactions_FinancialSceneGroups_GroupId",
+                        name: "FK_FinancialSceneExpenses_FinancialSceneGroups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "FinancialSceneGroups",
                         principalColumn: "Id",
@@ -150,7 +172,7 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    FinancialSceneTransactionId = table.Column<Guid>(type: "uuid", nullable: true),
+                    FinancialSceneExpenseId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -158,15 +180,30 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_Tags", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tags_FinancialSceneTransactions_FinancialSceneTransactionId",
-                        column: x => x.FinancialSceneTransactionId,
-                        principalTable: "FinancialSceneTransactions",
+                        name: "FK_Tags_FinancialSceneExpenses_FinancialSceneExpenseId",
+                        column: x => x.FinancialSceneExpenseId,
+                        principalTable: "FinancialSceneExpenses",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_FinancialSceneExpenses_CurrencyId",
+                table: "FinancialSceneExpenses",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialSceneExpenses_GroupId",
+                table: "FinancialSceneExpenses",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FinancialSceneGroups_FinancialSceneId",
                 table: "FinancialSceneGroups",
+                column: "FinancialSceneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialSceneIncomes_FinancialSceneId",
+                table: "FinancialSceneIncomes",
                 column: "FinancialSceneId");
 
             migrationBuilder.CreateIndex(
@@ -176,24 +213,17 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_FinancialSceneTransactions_CurrencyId",
-                table: "FinancialSceneTransactions",
-                column: "CurrencyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialSceneTransactions_GroupId",
-                table: "FinancialSceneTransactions",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tags_FinancialSceneTransactionId",
+                name: "IX_Tags_FinancialSceneExpenseId",
                 table: "Tags",
-                column: "FinancialSceneTransactionId");
+                column: "FinancialSceneExpenseId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "FinancialSceneIncomes");
+
             migrationBuilder.DropTable(
                 name: "Settings");
 
@@ -204,7 +234,7 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "FinancialSceneTransactions");
+                name: "FinancialSceneExpenses");
 
             migrationBuilder.DropTable(
                 name: "Currencies");

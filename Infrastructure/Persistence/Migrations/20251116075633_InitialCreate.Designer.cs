@@ -12,7 +12,7 @@ using SaldoFlex.API.Infrastructure.Persistence;
 namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251108083206_InitialCreate")]
+    [Migration("20251116075633_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -63,6 +63,9 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<Guid>("FinancialSceneId")
                         .HasColumnType("uuid");
 
@@ -87,9 +90,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<Guid>("FinancialPlanId")
                         .HasColumnType("uuid");
 
@@ -102,6 +102,43 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("FinancialScenes");
+                });
+
+            modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneExpense", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CurrencyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("FinancialSceneExpenses");
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneGroup", b =>
@@ -130,7 +167,7 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.ToTable("FinancialSceneGroups");
                 });
 
-            modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneTransaction", b =>
+            modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneIncome", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -142,25 +179,21 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("CurrencyId")
+                    b.Property<Guid?>("FinancialSceneId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("State")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CurrencyId");
+                    b.HasIndex("FinancialSceneId");
 
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("FinancialSceneTransactions");
+                    b.ToTable("FinancialSceneIncomes");
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.Setting", b =>
@@ -193,7 +226,7 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("FinancialSceneTransactionId")
+                    b.Property<Guid?>("FinancialSceneExpenseId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -205,7 +238,7 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FinancialSceneTransactionId");
+                    b.HasIndex("FinancialSceneExpenseId");
 
                     b.ToTable("Tags");
                 });
@@ -252,6 +285,25 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Navigation("FinancialPlan");
                 });
 
+            modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneExpense", b =>
+                {
+                    b.HasOne("SaldoFlex.API.Domain.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SaldoFlex.API.Domain.FinancialSceneGroup", "Group")
+                        .WithMany("Expenses")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneGroup", b =>
                 {
                     b.HasOne("SaldoFlex.API.Domain.FinancialScene", "FinancialScene")
@@ -263,30 +315,18 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Navigation("FinancialScene");
                 });
 
-            modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneTransaction", b =>
+            modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneIncome", b =>
                 {
-                    b.HasOne("SaldoFlex.API.Domain.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SaldoFlex.API.Domain.FinancialSceneGroup", "Group")
-                        .WithMany("Transactions")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Currency");
-
-                    b.Navigation("Group");
+                    b.HasOne("SaldoFlex.API.Domain.FinancialScene", null)
+                        .WithMany("Incomes")
+                        .HasForeignKey("FinancialSceneId");
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.Tag", b =>
                 {
-                    b.HasOne("SaldoFlex.API.Domain.FinancialSceneTransaction", null)
+                    b.HasOne("SaldoFlex.API.Domain.FinancialSceneExpense", null)
                         .WithMany("Tags")
-                        .HasForeignKey("FinancialSceneTransactionId");
+                        .HasForeignKey("FinancialSceneExpenseId");
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.FinancialPlan", b =>
@@ -298,16 +338,18 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("SaldoFlex.API.Domain.FinancialScene", b =>
                 {
                     b.Navigation("Groups");
+
+                    b.Navigation("Incomes");
+                });
+
+            modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneExpense", b =>
+                {
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneGroup", b =>
                 {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("SaldoFlex.API.Domain.FinancialSceneTransaction", b =>
-                {
-                    b.Navigation("Tags");
+                    b.Navigation("Expenses");
                 });
 #pragma warning restore 612, 618
         }
