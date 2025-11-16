@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\FinancialPlans\GetAll\" />
     <Folder Include="Features\FinancialPlans\GetById\" />
     <Folder Include="Features\FinancialPlans\Delete\" />
     <Folder Include="Features\FinancialPlans\Update\" />
