@@ -13,12 +13,3 @@ public record UpdateCurrencyResponse(
     string Symbol,
     string Code
 );
-
-
-public class UpdateCurrencyRequestValidator : AbstractValidator<UpdateCurrencyRequest>
-{
-    public UpdateCurrencyRequestValidator()
-    {
-        RuleFor(x => x.Id).NotEmpty();
-    }
-}
