@@ -26,6 +26,7 @@ public class CreateFinancialPlanEndpoint : Endpoint<CreateFinancialPlanRequest>
         if (result.IsFailure)
         {
             await Send.ResponseAsync(result.Error, StatusCodes.Status400BadRequest, ct);
+            return;
         }
 
         await Send.ResponseAsync(result.Value, StatusCodes.Status201Created, ct);
