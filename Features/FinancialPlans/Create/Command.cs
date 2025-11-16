@@ -33,7 +33,7 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
-            Description = request.Description
+            Description = request?.Description
         };
 
         var scene = new FinancialScene()
