@@ -3,8 +3,7 @@
 public record CreateCurrencyRequest(
   string Symbol,
   string Code,
-  string Description,
-  bool IsDefault
+  string Description
 );
 
 public record CreateCurrencyResponse(
