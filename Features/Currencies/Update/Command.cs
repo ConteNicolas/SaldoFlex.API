@@ -28,6 +28,11 @@ public class UpdateCurrencyCommandHandler : IRequestHandler<UpdateCurrencyComman
     {
         var currency = await _context.Currencies.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
+        if ((request.IsDefault.HasValue && request.IsDefault.Value) && await _context.Currencies.AnyAsync(x => x.IsDefault, cancellationToken))
+        {
+            return Result.Failure<UpdateCurrencyResponse>(new Error("Currency.Update.DefaultExists", "There is already a default currency."));
+        }
+
         if (currency is null)
         {
             return Result.Failure<UpdateCurrencyResponse>(new Error("Currency.Update.NotFound", "Currency not found."));
