@@ -25,10 +25,4 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\FinancialPlans\GetById\" />
-    <Folder Include="Features\FinancialPlans\Delete\" />
-    <Folder Include="Features\FinancialPlans\Update\" />
-  </ItemGroup>
-
 </Project>
