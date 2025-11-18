@@ -4,12 +4,14 @@ public record UpdateCurrencyRequest(
     Guid Id,
     string? Description,
     string? Symbol,
-    string? Code
+    string? Code,
+    bool? IsDefault
 );
 
 public record UpdateCurrencyResponse(
     Guid Id,
     string Description,
     string Symbol,
-    string Code
+    string Code,
+    bool IsDefault
 );

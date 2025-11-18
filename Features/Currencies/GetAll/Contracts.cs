@@ -14,5 +14,6 @@ public record GetAllCurrenciesResponse(
     Guid Id,
     string Code,
     string Symbol,
-    string Description
+    string Description,
+    bool IsDefault
 );

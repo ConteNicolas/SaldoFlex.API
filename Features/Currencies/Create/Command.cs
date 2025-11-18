@@ -10,7 +10,8 @@ namespace SaldoFlex.API.Features.Currencies.Create;
 public record CreateCurrencyCommand(
    string Symbol,
    string Code,
-   string Description
+   string Description,
+   bool IsDefault
 ) : IRequest<Result<CreateCurrencyResponse>>;
 
 
@@ -38,6 +39,7 @@ public class CreateCurrencyCommandHandler : IRequestHandler<CreateCurrencyComman
             Symbol = request.Symbol,
             Code = request.Code,
             Description = request.Description,
+            IsDefault = request.IsDefault,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -51,6 +53,6 @@ public class CreateCurrencyCommandHandler : IRequestHandler<CreateCurrencyComman
 
     private CreateCurrencyResponse MapToResponse(Currency currency)
     {
-        return new CreateCurrencyResponse(currency.Id, currency.Code, currency.Symbol, currency.Description);
+        return new CreateCurrencyResponse(currency.Id, currency.Code, currency.Symbol, currency.Description, currency.IsDefault);
     }
 }

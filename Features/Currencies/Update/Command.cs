@@ -10,7 +10,8 @@ public record UpdateCurrencyCommand(
     Guid Id,
     string? Symbol,
     string? Code,
-    string? Description
+    string? Description,
+    bool? IsDefault
 ) : IRequest<Result<UpdateCurrencyResponse>>;
 
 
@@ -35,6 +36,7 @@ public class UpdateCurrencyCommandHandler : IRequestHandler<UpdateCurrencyComman
         currency.Description = request.Description ?? currency.Description;
         currency.Code = request.Code ?? currency.Code;
         currency.Symbol = request.Symbol ?? currency.Symbol;
+        currency.IsDefault = request?.IsDefault ?? currency.IsDefault;
 
         currency.UpdatedAt = DateTime.UtcNow;
 
@@ -46,6 +48,6 @@ public class UpdateCurrencyCommandHandler : IRequestHandler<UpdateCurrencyComman
 
     private UpdateCurrencyResponse MapToResponse(Currency currency)
     {
-        return new UpdateCurrencyResponse(currency.Id, currency.Code, currency.Symbol, currency.Description);
+        return new UpdateCurrencyResponse(currency.Id, currency.Code, currency.Symbol, currency.Description, currency.IsDefault);
     }
 }

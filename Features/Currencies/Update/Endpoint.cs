@@ -34,6 +34,6 @@ public class UpdateCurrencyEndpoint : Endpoint<UpdateCurrencyRequest>
 
     private UpdateCurrencyCommand MapToCommand(UpdateCurrencyRequest request)
     {
-        return new UpdateCurrencyCommand(request.Id, request.Symbol, request.Code, request.Description);
+        return new UpdateCurrencyCommand(request.Id, request?.Symbol, request?.Code, request?.Description, request?.IsDefault);
     }
 }

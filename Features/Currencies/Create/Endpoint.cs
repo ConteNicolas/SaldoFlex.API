@@ -36,6 +36,6 @@ public class CreateCurrencyEndpoint : Endpoint<CreateCurrencyRequest>
 
     private CreateCurrencyCommand MapToCommand(CreateCurrencyRequest request)
     {
-        return new CreateCurrencyCommand(request.Symbol, request.Code, request.Description);
+        return new CreateCurrencyCommand(request.Symbol, request.Code, request.Description, request.IsDefault);
     }
 }
