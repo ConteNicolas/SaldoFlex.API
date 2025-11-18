@@ -27,7 +27,7 @@ public class UpdateFinancialPlanCommandHandler : IRequestHandler<UpdateFinancial
 
         if (plan is null)
         {
-            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.NotFound", "Financial plan not found."));>
+            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.NotFound", "Financial plan not found."));
         }
 
         plan.Name = request?.Name ?? plan.Name;
