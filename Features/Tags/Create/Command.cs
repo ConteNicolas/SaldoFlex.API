@@ -31,6 +31,7 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Result<
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
+            CreatedAt = DateTime.UtcNow,
         };
 
         await _context.Tags.AddAsync(tag, cancellationToken);
