@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SaldoFlex.API.Domain;
 using SaldoFlex.API.Infrastructure.Persistence;
+using SaldoFlex.API.Shared.Context;
 using SaldoFlex.API.Shared.Models;
 
 namespace SaldoFlex.API.Features.Currencies.Create;
@@ -17,10 +18,12 @@ public record CreateCurrencyCommand(
 public class CreateCurrencyCommandHandler : IRequestHandler<CreateCurrencyCommand, Result<CreateCurrencyResponse>>
 {
     private ApplicationDbContext _context;
+    private IUserContext _userContext;
 
-    public CreateCurrencyCommandHandler(ApplicationDbContext context)
+    public CreateCurrencyCommandHandler(ApplicationDbContext context, IUserContext userContext)
     {
         _context = context;
+        _userContext = userContext;
     }
 
     public async Task<Result<CreateCurrencyResponse>> Handle(CreateCurrencyCommand request, CancellationToken cancellationToken)
@@ -32,12 +35,15 @@ public class CreateCurrencyCommandHandler : IRequestHandler<CreateCurrencyComman
             return Result.Failure<CreateCurrencyResponse>(new Error("Currency.Create.Exists", "Currency already exists."));
         }
 
+        var userId = _userContext.GetUserId().GetValueOrDefault();
+
         var currency = new Currency()
         {
             Id = Guid.NewGuid(),
             Symbol = request.Symbol,
             Code = request.Code,
             Description = request.Description,
+            UserId = userId,
             IsDefault = false,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow

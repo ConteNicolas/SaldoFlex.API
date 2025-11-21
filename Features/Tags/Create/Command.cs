@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SaldoFlex.API.Domain;
 using SaldoFlex.API.Infrastructure.Persistence;
+using SaldoFlex.API.Shared.Context;
 using SaldoFlex.API.Shared.Models;
 
 namespace SaldoFlex.API.Features.Tags.Create;
@@ -13,10 +14,12 @@ public record CreateTagCommand(
 public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Result<CreateTagResponse>>
 {
     private readonly ApplicationDbContext _context;
+    private IUserContext _userContext;
 
-    public CreateTagCommandHandler(ApplicationDbContext context)
+    public CreateTagCommandHandler(ApplicationDbContext context, IUserContext userContext)
     {
         _context = context;
+        _userContext = userContext;
     }
 
     public async Task<Result<CreateTagResponse>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
@@ -27,11 +30,14 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Result<
             return Result.Failure<CreateTagResponse>(new Error("Tag.Create.Exists", "Tag already exists."));
         }
 
+        var userId = _userContext.GetUserId().GetValueOrDefault();
+
         var tag = new Tag
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
             CreatedAt = DateTime.UtcNow,
+            UserId = userId,
         };
 
         await _context.Tags.AddAsync(tag, cancellationToken);

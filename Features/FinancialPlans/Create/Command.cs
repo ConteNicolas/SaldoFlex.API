@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SaldoFlex.API.Domain;
 using SaldoFlex.API.Infrastructure.Persistence;
+using SaldoFlex.API.Shared.Context;
 using SaldoFlex.API.Shared.Models;
 
 namespace SaldoFlex.API.Features.FinancialPlans.Create;
@@ -14,10 +15,12 @@ public record CreateFinancialPlanCommand(
 public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancialPlanCommand, Result<CreateFinancialPlanResponse>>
 {
     private readonly ApplicationDbContext _context;
-    
-    public CreateFinancialPlanCommandHandler(ApplicationDbContext context)
+    private readonly IUserContext _userContext;
+
+    public CreateFinancialPlanCommandHandler(ApplicationDbContext context, IUserContext userContext)
     {
         _context = context;
+        _userContext = userContext;
     }
 
     public async Task<Result<CreateFinancialPlanResponse>> Handle(CreateFinancialPlanCommand request, CancellationToken cancellationToken)
@@ -29,18 +32,22 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
             return Result.Failure<CreateFinancialPlanResponse>(new Error("FinancialPlan.Create.Exists", "Financial plan already exists."));
         }
 
+        var userId = _userContext.GetUserId().GetValueOrDefault();
+
         var plan = new FinancialPlan()
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
             Description = request?.Description,
             CreatedAt = DateTime.UtcNow,
+            UserId = userId
         };
 
         var scene = new FinancialScene()
         {
             Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow,
+            UserId = userId
         };
 
         plan.FinancialSceneId = scene.Id;
@@ -53,6 +60,7 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
             FinancialSceneId = scene.Id,
             FinancialScene = scene,
             CreatedAt = DateTime.UtcNow,
+            UserId = userId
         });
 
 

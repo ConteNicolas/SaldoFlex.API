@@ -2,7 +2,9 @@
 using SaldoFlex.API.Domain;
 using SaldoFlex.API.Infrastructure.Extension;
 using SaldoFlex.API.Infrastructure.Persistence;
+using SaldoFlex.API.Shared.Context;
 using SaldoFlex.API.Shared.Models;
+using System.Xml;
 
 namespace SaldoFlex.API.Features.Currencies.GetAll;
 
@@ -19,18 +21,23 @@ public record GetAllCurrenciesQuery(
 public class GetAllCurrenciesQueryHandler : IRequestHandler<GetAllCurrenciesQuery, Result<PaginatedResult<GetAllCurrenciesResponse>>>
 {
     private readonly ApplicationDbContext _context;
+    private readonly IUserContext _userContext;
 
-    public GetAllCurrenciesQueryHandler(ApplicationDbContext context)
+    public GetAllCurrenciesQueryHandler(ApplicationDbContext context, IUserContext userContext)
     {
         _context = context;
+        _userContext = userContext;
     }
 
     public async Task<Result<PaginatedResult<GetAllCurrenciesResponse>>> Handle(GetAllCurrenciesQuery request, CancellationToken cancellationToken)
     {
+        var userId = _userContext.GetUserId().GetValueOrDefault();
+
         var currencies = await _context.Currencies
             .Where(x => request.Code == null || x.Code == request.Code)
             .Where(x => request.Description == null || x.Description == request.Description)
             .Where(x => request.Symbol == null || x.Symbol == request.Symbol)
+            .Where(x => x.UserId == userId)
             .Select(x => new GetAllCurrenciesResponse(x.Id, x.Code, x.Symbol, x.Description, x.IsDefault))
             .ToPaginatedResultAsync(request.Page, request.PageSize, cancellationToken);
 
