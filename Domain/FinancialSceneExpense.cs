@@ -1,4 +1,5 @@
 ﻿using SaldoFlex.API.Domain.Abstractions;
+using SaldoFlex.API.Domain.Abstractions.Interfaces;
 
 namespace SaldoFlex.API.Domain;
 
@@ -8,7 +9,7 @@ public enum FinancialSceneExpenseStateEnum
     Paid
 }
 
-public class FinancialSceneExpense : BaseEntity
+public class FinancialSceneExpense : BaseEntity, IUserOwnedEntity
 {
     public string Name { get; set; }
 
@@ -22,4 +23,7 @@ public class FinancialSceneExpense : BaseEntity
 
     public double Amount { get; set; }
     public FinancialSceneExpenseStateEnum State { get; set; }
+
+    public Guid UserId { get; set; }
+    public virtual User User { get; set; }
 }

@@ -8,4 +8,6 @@ public class User : BaseEntity
     public string Password { get; set; }
     public string? Email { get; set; }
     public DateTime? LastLogin { get; set; }
+    public virtual Account Account { get; set; }
+    public Guid AccountId { get; set; }
 }
