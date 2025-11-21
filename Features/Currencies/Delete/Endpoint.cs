@@ -1,8 +1,13 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain;
+using SaldoFlex.API.Domain.Enums;
+using SaldoFlex.API.Shared.Attributes;
 
 namespace SaldoFlex.API.Features.Currencies.Delete;
 
+
+[ResourceOwnershipRequired(entityType: typeof(Currency), routeValue: "Id")]
 public class DeleteCurrencyEndpoint : Endpoint<DeleteCurrencyRequest>
 {
     private readonly ISender _sender;
@@ -16,7 +21,7 @@ public class DeleteCurrencyEndpoint : Endpoint<DeleteCurrencyRequest>
     public override void Configure()
     {
         Delete("currencies/{Id}");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(DeleteCurrencyRequest request, CancellationToken cancellationToken)

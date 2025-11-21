@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain.Enums;
 
 namespace SaldoFlex.API.Features.FinancialPlans.Create;
 
@@ -15,7 +16,7 @@ public class CreateFinancialPlanEndpoint : Endpoint<CreateFinancialPlanRequest>
     public override void Configure()
     {
         Post("financial-plans");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(CreateFinancialPlanRequest req, CancellationToken ct)

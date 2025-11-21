@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain.Enums;
 
 namespace SaldoFlex.API.Features.FinancialPlans.GetAll;
 
@@ -15,7 +16,7 @@ public class GetAllFinancialPlansEndpoint : Endpoint<GetAllFinancialPlansRequest
     public override void Configure()
     {
         Get("financial-plans");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(GetAllFinancialPlansRequest request, CancellationToken cancellationToken)

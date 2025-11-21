@@ -1,8 +1,12 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain;
+using SaldoFlex.API.Domain.Enums;
+using SaldoFlex.API.Shared.Attributes;
 
 namespace SaldoFlex.API.Features.FinancialPlans.Update;
 
+[ResourceOwnershipRequired(entityType: typeof(FinancialPlan), routeValue: "Id")]
 public class UpdateFinancialPlanEndpoint : Endpoint<UpdateFinancialPlanRequest>
 {
     private readonly ISender _sender;
@@ -15,7 +19,7 @@ public class UpdateFinancialPlanEndpoint : Endpoint<UpdateFinancialPlanRequest>
     public override void Configure()
     {
         Put("financial-plans/{Id}");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(UpdateFinancialPlanRequest req, CancellationToken ct)

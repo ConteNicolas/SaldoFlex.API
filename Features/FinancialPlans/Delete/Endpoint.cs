@@ -1,8 +1,12 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain;
+using SaldoFlex.API.Domain.Enums;
+using SaldoFlex.API.Shared.Attributes;
 
 namespace SaldoFlex.API.Features.FinancialPlans.Delete;
 
+[ResourceOwnershipRequired(entityType: typeof(FinancialPlan), routeValue: "Id")]
 public class DeleteFinancialPlanEndpoint : Endpoint<DeleteFinancialPlanRequest>
 {
     private ISender _sender;
@@ -15,7 +19,7 @@ public class DeleteFinancialPlanEndpoint : Endpoint<DeleteFinancialPlanRequest>
     public override void Configure()
     {
         Delete("financial-plans/{Id}");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(DeleteFinancialPlanRequest req, CancellationToken ct)

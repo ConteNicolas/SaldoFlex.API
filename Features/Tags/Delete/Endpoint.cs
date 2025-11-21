@@ -1,8 +1,12 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain;
+using SaldoFlex.API.Domain.Enums;
+using SaldoFlex.API.Shared.Attributes;
 
 namespace SaldoFlex.API.Features.Tags.Delete;
 
+[ResourceOwnershipRequired(entityType: typeof(Tag), routeValue: "Id")]
 public class DeleteTagEndpoint : Endpoint<DeleteTagRequest>
 {
     private readonly ISender _sender;
@@ -15,7 +19,7 @@ public class DeleteTagEndpoint : Endpoint<DeleteTagRequest>
     public override void Configure()
     {
         Delete("/tags/{Id}");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(DeleteTagRequest req, CancellationToken cancellationToken)

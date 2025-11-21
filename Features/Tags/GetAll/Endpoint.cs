@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain.Enums;
 
 namespace SaldoFlex.API.Features.Tags.GetAll;
 
@@ -15,7 +16,7 @@ public class GetAllTagsEndpoint : Endpoint<GetAllTagsRequest>
     public override void Configure()
     {
         Get("/tags");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(GetAllTagsRequest request, CancellationToken cancellationToken)

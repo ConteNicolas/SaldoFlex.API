@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain.Enums;
 
 namespace SaldoFlex.API.Features.Tags.Create;
 
@@ -15,7 +16,7 @@ public class CreateTagEndpoint : Endpoint<CreateTagRequest>
     public override void Configure()
     {
         Post("/tags");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(CreateTagRequest request, CancellationToken cancellationToken)

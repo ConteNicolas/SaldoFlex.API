@@ -1,9 +1,13 @@
 ﻿using FastEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Routing;
+using SaldoFlex.API.Domain;
+using SaldoFlex.API.Domain.Enums;
+using SaldoFlex.API.Shared.Attributes;
 
 namespace SaldoFlex.API.Features.Tags.Update;
 
+[ResourceOwnershipRequired(entityType: typeof(Tag), routeValue: "Id")]
 public class UpdateTagEndpoint : Endpoint<UpdateTagRequest>
 {
     private readonly ISender _sender;
@@ -15,8 +19,8 @@ public class UpdateTagEndpoint : Endpoint<UpdateTagRequest>
 
     public override void Configure()
     {
-        Put("tags");
-        AllowAnonymous();
+        Put("tags/{Id}");
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(UpdateTagRequest req, CancellationToken ct)

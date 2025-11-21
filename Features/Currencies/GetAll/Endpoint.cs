@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain.Enums;
 using SaldoFlex.API.Shared.Models;
 
 namespace SaldoFlex.API.Features.Currencies.GetAll;
@@ -16,7 +17,7 @@ public class GetAllCurrenciesEndpoint : Endpoint<GetAllCurrenciesRequest>
     public override void Configure()
     {
         Get("currencies");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(GetAllCurrenciesRequest request, CancellationToken cancellationToken)

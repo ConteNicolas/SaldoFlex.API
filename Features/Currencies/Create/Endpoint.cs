@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using MediatR;
+using SaldoFlex.API.Domain.Enums;
 using System.Net;
 
 namespace SaldoFlex.API.Features.Currencies.Create;
@@ -17,7 +18,7 @@ public class CreateCurrencyEndpoint : Endpoint<CreateCurrencyRequest>
     public override void Configure()
     {
         Post("currencies");
-        AllowAnonymous();
+        Claims(nameof(ClaimsEnum.UserId));
     }
 
     public override async Task HandleAsync(CreateCurrencyRequest request, CancellationToken cancellationToken)
