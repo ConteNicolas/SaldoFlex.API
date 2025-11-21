@@ -15,6 +15,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     //Commons
     public DbSet<User> Users { get; set; }
+    public DbSet<Account> Accounts { get; set; }
+
     public DbSet<Currency> Currencies { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Setting> Settings { get; set; }
