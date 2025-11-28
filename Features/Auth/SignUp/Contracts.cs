@@ -1,4 +1,4 @@
-﻿namespace SaldoFlex.API.Features.Users.SignUp;
+﻿namespace SaldoFlex.API.Features.Auth.SignUp;
 
 public record SignUpRequest(
     string Username,

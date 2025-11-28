@@ -5,7 +5,7 @@ using SaldoFlex.API.Infrastructure.Persistence;
 using SaldoFlex.API.Shared.Models;
 using SaldoFlex.API.Shared.Utils;
 
-namespace SaldoFlex.API.Features.Users.SignUp;
+namespace SaldoFlex.API.Features.Auth.SignUp;
 
 public record SignUpCommand(
     string Username,

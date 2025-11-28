@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using MediatR;
 
-namespace SaldoFlex.API.Features.Users.SignUp;
+namespace SaldoFlex.API.Features.Auth.SignUp;
 
 public class SignUpEndpoint : Endpoint<SignUpRequest>
 {
@@ -14,7 +14,7 @@ public class SignUpEndpoint : Endpoint<SignUpRequest>
 
     public override void Configure()
     {
-        Post("/users/sign-up");
+        Post("/auth/sign-up");
         AllowAnonymous();
     }
 
