@@ -33,6 +33,12 @@ public class GetFinancialPlanByIdQueryHandler : IRequestHandler<GetFinancialPlan
 
     private GetFinancialPlanByIdResponse MapToResponse(FinancialPlan plan)
     {
-        return new GetFinancialPlanByIdResponse(plan.Id, plan.Name, plan?.Description);
+        var tags = MapTags(plan);
+        return new GetFinancialPlanByIdResponse(plan.Id, plan.Name, plan?.Description, tags);
+    }
+
+    private List<GetFinancialPlanTagByIdResponse> MapTags(FinancialPlan plan)
+    {
+        return plan.Tags.Select(x => new GetFinancialPlanTagByIdResponse(x.Id, x.Name)).ToList();
     }
 }

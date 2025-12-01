@@ -31,7 +31,8 @@ public class GetAllFinancialPlansQueryHandler : IRequestHandler<GetAllFinancialP
         var financialPlans = await _context.FinancialPlans
             .Where(x => request.Name == null || x.Name.Contains(request.Name))
             .Where(x => x.UserId == userId)
-            .Select(x => new GetAllFinancialPlansResponse(x.Id, x.Name, x.Description, x.CreatedAt, x.UpdatedAt))
+            .OrderByDescending(x => x.CreatedAt)
+            .Select(x => new GetAllFinancialPlansResponse(x.Id, x.Name, x.Description, x.CreatedAt, x.UpdatedAt, x.Tags.Select(t => new GetAllFinancialPlanTagsResponse(t.Id, t.Name)).ToList()))
             .ToPaginatedResultAsync(request.Page, request.PageSize, cancellationToken);
 
         return Result.Success(financialPlans);
