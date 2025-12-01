@@ -5,25 +5,25 @@ namespace SaldoFlex.API.Shared.Models
 
     public class PaginatedResult<T>
     {
-        public IReadOnlyCollection<T> Data { get; }
+        public IReadOnlyCollection<T> Items { get; }
         public int CurrentPage { get; }
         public int TotalPages { get; }
         public int TotalItems { get; }
 
-        public PaginatedResult(IReadOnlyCollection<T> data, int totalItems, int currentPage, int pageSize)
+        public PaginatedResult(IReadOnlyCollection<T> items, int totalItems, int currentPage, int pageSize)
         {
             CurrentPage = currentPage;
             TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
             TotalItems = totalItems;
-            Data = data;
+            Items = items;
         }
 
-        public PaginatedResult(IReadOnlyCollection<T> data, int totalItems, int currentPage, int pageSize, CancellationToken cancellationToken)
+        public PaginatedResult(IReadOnlyCollection<T> items, int totalItems, int currentPage, int pageSize, CancellationToken cancellationToken)
         {
             CurrentPage = currentPage;
             TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
             TotalItems = totalItems;
-            Data = data;
+            Items = items;
         }
 
         public bool HasPreviousPage => CurrentPage > 1;
