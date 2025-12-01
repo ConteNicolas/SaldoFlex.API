@@ -25,13 +25,6 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
 
     public async Task<Result<CreateFinancialPlanResponse>> Handle(CreateFinancialPlanCommand request, CancellationToken cancellationToken)
     {
-        var exists = await _context.FinancialPlans.AnyAsync(x => x.Name == request.Name, cancellationToken);
-
-        if (exists)
-        {
-            return Result.Failure<CreateFinancialPlanResponse>(new Error("FinancialPlan.Create.Exists", "Financial plan already exists."));
-        }
-
         var userId = _userContext.GetUserId().GetValueOrDefault();
 
         var plan = new FinancialPlan()
@@ -42,6 +35,28 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
             CreatedAt = DateTime.UtcNow,
             UserId = userId
         };
+
+        var exists = await _context.FinancialPlans.AnyAsync(x => x.Name.ToLower() == request!.Name.ToLower(), cancellationToken);
+
+        if (exists)
+        {
+            var duplicateTag = await _context.Tags.FirstOrDefaultAsync(x => x.Name == "Duplicate" && x.UserId == userId, cancellationToken);
+
+            if (duplicateTag is null)
+            {
+                duplicateTag = new Tag()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Duplicate",
+                    CreatedAt = DateTime.UtcNow,
+                    UserId = userId
+                };
+
+                await _context.Tags.AddAsync(duplicateTag, cancellationToken);
+            }
+
+            plan.Tags.Add(duplicateTag);
+        }
 
         var scene = new FinancialScene()
         {
@@ -72,6 +87,12 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
 
     private CreateFinancialPlanResponse MapToResponse(FinancialPlan plan)
     {
-        return new CreateFinancialPlanResponse(plan.Id, plan.Name, plan?.Description);
+        var tags = MapTags(plan);
+        return new CreateFinancialPlanResponse(plan.Id, plan.Name, plan?.Description, plan.CreatedAt, plan.UpdatedAt, tags);
+    }
+
+    private List<CreateFinancialPlanTagsResponse> MapTags(FinancialPlan plan)
+    {
+        return plan?.Tags.Select(x => new CreateFinancialPlanTagsResponse(x.Id, x.Name)).ToList() ?? new List<CreateFinancialPlanTagsResponse>();
     }
 }
