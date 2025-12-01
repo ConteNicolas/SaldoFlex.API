@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SaldoFlex.API.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using SaldoFlex.API.Infrastructure.Persistence;
 namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201054716_RemoveCanDeleteProp")]
+    partial class RemoveCanDeleteProp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("FinancialPlanTag", b =>
-                {
-                    b.Property<Guid>("FinancialPlansId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TagsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("FinancialPlansId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("FinancialPlanTag");
-                });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.Account", b =>
                 {
@@ -304,6 +292,9 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("FinancialPlanId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("FinancialSceneExpenseId")
                         .HasColumnType("uuid");
 
@@ -318,6 +309,8 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FinancialPlanId");
 
                     b.HasIndex("FinancialSceneExpenseId");
 
@@ -361,21 +354,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("FinancialPlanTag", b =>
-                {
-                    b.HasOne("SaldoFlex.API.Domain.FinancialPlan", null)
-                        .WithMany()
-                        .HasForeignKey("FinancialPlansId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SaldoFlex.API.Domain.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.Currency", b =>
@@ -493,6 +471,10 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SaldoFlex.API.Domain.Tag", b =>
                 {
+                    b.HasOne("SaldoFlex.API.Domain.FinancialPlan", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("FinancialPlanId");
+
                     b.HasOne("SaldoFlex.API.Domain.FinancialSceneExpense", null)
                         .WithMany("Tags")
                         .HasForeignKey("FinancialSceneExpenseId");
@@ -527,6 +509,8 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("FinancialScene")
                         .IsRequired();
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.FinancialScene", b =>
