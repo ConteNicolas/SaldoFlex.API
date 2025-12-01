@@ -11,6 +11,8 @@ public class FinancialPlan : BaseEntity, IUserOwnedEntity
     public Guid FinancialSceneId { get; set; }
     public virtual FinancialScene FinancialScene { get; set; }
 
+    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
     public Guid UserId { get; set; }
     public virtual User User { get; set; }
 }
