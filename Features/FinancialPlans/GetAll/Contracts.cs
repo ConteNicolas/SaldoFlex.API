@@ -11,5 +11,11 @@ public record GetAllFinancialPlansResponse(
     string Name,
     string? Description,
     DateTime CreatedAt,
-    DateTime UpdatedAt
+    DateTime UpdatedAt,
+    List<GetAllFinancialPlanTagsResponse> Tags
+);
+
+public record GetAllFinancialPlanTagsResponse(
+    Guid Id,
+    string Name
 );

@@ -5,9 +5,16 @@ public record CreateFinancialPlanRequest(
     string? Description
 );
 
-
 public record CreateFinancialPlanResponse(
     Guid Id,
     string Name,
-    string? Description
+    string? Description,
+    DateTime CreatedAt,
+    DateTime UpdatedAt,
+    List<CreateFinancialPlanTagsResponse> Tags
+);
+
+public record CreateFinancialPlanTagsResponse(
+    Guid Id,
+    string Name
 );
