@@ -22,21 +22,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FinancialPlanTag", b =>
-                {
-                    b.Property<Guid>("FinancialPlansId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TagsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("FinancialPlansId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("FinancialPlanTag");
-                });
-
             modelBuilder.Entity("SaldoFlex.API.Domain.Account", b =>
                 {
                     b.Property<Guid>("Id")
@@ -120,6 +105,12 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Origin")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -361,21 +352,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("FinancialPlanTag", b =>
-                {
-                    b.HasOne("SaldoFlex.API.Domain.FinancialPlan", null)
-                        .WithMany()
-                        .HasForeignKey("FinancialPlansId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SaldoFlex.API.Domain.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.Currency", b =>

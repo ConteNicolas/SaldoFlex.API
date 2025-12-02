@@ -38,6 +38,6 @@ public class UpdateFinancialPlanEndpoint : Endpoint<UpdateFinancialPlanRequest>
 
     private UpdateFinancialPlanCommand MapToCommand(UpdateFinancialPlanRequest req)
     {
-        return new UpdateFinancialPlanCommand(req.Id, req.Name, req.Description);
+        return new UpdateFinancialPlanCommand(req.Id, req.Name, req.Description, req.Status);
     }
 }

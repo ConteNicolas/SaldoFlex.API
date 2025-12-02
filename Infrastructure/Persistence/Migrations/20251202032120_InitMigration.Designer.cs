@@ -12,8 +12,8 @@ using SaldoFlex.API.Infrastructure.Persistence;
 namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251201054716_RemoveCanDeleteProp")]
-    partial class RemoveCanDeleteProp
+    [Migration("20251202032120_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,6 +108,12 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Origin")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -292,9 +298,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("FinancialPlanId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("FinancialSceneExpenseId")
                         .HasColumnType("uuid");
 
@@ -309,8 +312,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FinancialPlanId");
 
                     b.HasIndex("FinancialSceneExpenseId");
 
@@ -471,10 +472,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SaldoFlex.API.Domain.Tag", b =>
                 {
-                    b.HasOne("SaldoFlex.API.Domain.FinancialPlan", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("FinancialPlanId");
-
                     b.HasOne("SaldoFlex.API.Domain.FinancialSceneExpense", null)
                         .WithMany("Tags")
                         .HasForeignKey("FinancialSceneExpenseId");
@@ -509,8 +506,6 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("FinancialScene")
                         .IsRequired();
-
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("SaldoFlex.API.Domain.FinancialScene", b =>
