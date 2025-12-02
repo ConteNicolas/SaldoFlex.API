@@ -26,7 +26,7 @@ public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, Result<
             return Result.Failure<UpdateTagResponse>(new Error("Tag.Update.NotFound", "Tag not found."));
         }
 
-        tag.Name = request.Name ?? tag.Name;
+        tag.Name = request.Name;
 
         tag.UpdatedAt = DateTime.UtcNow;
 
