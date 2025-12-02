@@ -1,4 +1,6 @@
-﻿namespace SaldoFlex.API.Features.FinancialPlans.Create;
+﻿using SaldoFlex.API.Domain;
+
+namespace SaldoFlex.API.Features.FinancialPlans.Create;
 
 public record CreateFinancialPlanRequest(
     string Name, 
@@ -11,10 +13,6 @@ public record CreateFinancialPlanResponse(
     string? Description,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    List<CreateFinancialPlanTagsResponse> Tags
-);
-
-public record CreateFinancialPlanTagsResponse(
-    Guid Id,
-    string Name
+    FinancialPlanStatusEnum Status,
+    string StatusDescription
 );

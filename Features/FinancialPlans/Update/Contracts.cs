@@ -1,9 +1,12 @@
-﻿namespace SaldoFlex.API.Features.FinancialPlans.Update;
+﻿using SaldoFlex.API.Domain;
+
+namespace SaldoFlex.API.Features.FinancialPlans.Update;
 
 public record UpdateFinancialPlanRequest (
     Guid Id,
     string? Name,
-    string? Description
+    string? Description,
+    FinancialPlanStatusEnum Status = FinancialPlanStatusEnum.Active
 );
 
 public record UpdateFinancialPlanResponse(
@@ -12,10 +15,6 @@ public record UpdateFinancialPlanResponse(
     string? Description,
     DateTime CreatedAt, 
     DateTime UpdatedAt,
-    List<UpdateFinancialPlanTagResponse> Tags
-);
-
-public record UpdateFinancialPlanTagResponse(
-    Guid Id,
-    string Name
+    FinancialPlanStatusEnum Status, 
+    string StatusDescription
 );

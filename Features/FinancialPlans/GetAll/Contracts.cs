@@ -1,4 +1,5 @@
-﻿using SaldoFlex.API.Shared.Enums;
+﻿using SaldoFlex.API.Domain;
+using SaldoFlex.API.Shared.Enums;
 
 namespace SaldoFlex.API.Features.FinancialPlans.GetAll;
 
@@ -17,10 +18,6 @@ public record GetAllFinancialPlansResponse(
     string? Description,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    List<GetAllFinancialPlanTagsResponse> Tags
-);
-
-public record GetAllFinancialPlanTagsResponse(
-    Guid Id,
-    string Name
+    FinancialPlanStatusEnum Status,
+    string StatusDescription
 );
