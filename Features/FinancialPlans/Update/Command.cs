@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SaldoFlex.API.Domain;
+using SaldoFlex.API.Features.FinancialPlans.Create;
 using SaldoFlex.API.Infrastructure.Persistence;
 using SaldoFlex.API.Shared.Context;
 using SaldoFlex.API.Shared.Models;
@@ -38,6 +39,16 @@ public class UpdateFinancialPlanCommandHandler : IRequestHandler<UpdateFinancial
         if (plan.Name.ToLower() == request.Name?.ToLower() && plan.Description == request?.Description && plan.Status == request.Status)
         {
             return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.NoChanges", "There no changes to update."));
+        }
+
+        if (plan.Status == FinancialPlanStatusEnum.Archived)
+        {
+            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Exists", "Cannot update an 'archived' financial plan"));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request?.Name) && await _context.FinancialPlans.AnyAsync(x => x.Name.ToLower() == request.Name.ToLower()))
+        {
+            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Exists", "Financial plan already exists."));
         }
 
         var userId = _userContext.GetUserId().GetValueOrDefault();
