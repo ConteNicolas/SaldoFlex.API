@@ -3,6 +3,18 @@ using SaldoFlex.API.Domain.Abstractions.Interfaces;
 
 namespace SaldoFlex.API.Domain;
 
+public enum FinancialPlanStatusEnum
+{
+    Active,
+    Archived
+}
+
+public enum FinancialPlanOriginEnum
+{
+    UserCreated,
+    ImportedFromPlan
+}
+
 public class FinancialPlan : BaseEntity, IUserOwnedEntity
 {
     public string Name { get; set; }
@@ -11,7 +23,9 @@ public class FinancialPlan : BaseEntity, IUserOwnedEntity
     public Guid FinancialSceneId { get; set; }
     public virtual FinancialScene FinancialScene { get; set; }
 
-    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public FinancialPlanStatusEnum Status { get; set; }
+
+    public FinancialPlanOriginEnum Origin { get; set; }
 
     public Guid UserId { get; set; }
     public virtual User User { get; set; }
