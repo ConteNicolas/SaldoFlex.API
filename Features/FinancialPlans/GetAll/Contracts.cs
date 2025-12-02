@@ -1,9 +1,14 @@
-﻿namespace SaldoFlex.API.Features.FinancialPlans.GetAll;
+﻿using SaldoFlex.API.Shared.Enums;
+
+namespace SaldoFlex.API.Features.FinancialPlans.GetAll;
 
 public record GetAllFinancialPlansRequest(
     int Page = 1,
     int PageSize = 10,
-    string? Name = null
+    string? Name = null,
+    DateFilterTypes DateFilter = DateFilterTypes.None,
+    OrderByTypes OrderBy = OrderByTypes.CreationDate,
+    OrderDirectionTypes OrderDirection = OrderDirectionTypes.Descending
 );
 
 public record GetAllFinancialPlansResponse(

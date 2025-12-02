@@ -30,6 +30,6 @@ public class GetAllFinancialPlansEndpoint : Endpoint<GetAllFinancialPlansRequest
 
     private GetAllFinancialPlansQuery MapToQuery(GetAllFinancialPlansRequest request)
     {
-        return new GetAllFinancialPlansQuery(request.Page, request.PageSize, request?.Name);
+        return new GetAllFinancialPlansQuery(request.Page, request.PageSize, request?.Name, request.DateFilter, request.OrderBy, request.OrderDirection);
     }
 }

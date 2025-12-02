@@ -2,6 +2,7 @@
 using SaldoFlex.API.Infrastructure.Extension;
 using SaldoFlex.API.Infrastructure.Persistence;
 using SaldoFlex.API.Shared.Context;
+using SaldoFlex.API.Shared.Enums;
 using SaldoFlex.API.Shared.Models;
 
 namespace SaldoFlex.API.Features.FinancialPlans.GetAll;
@@ -9,7 +10,10 @@ namespace SaldoFlex.API.Features.FinancialPlans.GetAll;
 public record GetAllFinancialPlansQuery(
     int Page,
     int PageSize,
-    string? Name
+    string? Name,
+    DateFilterTypes DateFilter,
+    OrderByTypes OrderBy,
+    OrderDirectionTypes OrderDirection
 ) : IRequest<Result<PaginatedResult<GetAllFinancialPlansResponse>>>;
 
 
@@ -29,9 +33,10 @@ public class GetAllFinancialPlansQueryHandler : IRequestHandler<GetAllFinancialP
         var userId = _userContext.GetUserId().GetValueOrDefault();
 
         var financialPlans = await _context.FinancialPlans
-            .Where(x => request.Name == null || x.Name.Contains(request.Name))
+            .Where(x => request.Name == null || x.Name.ToLower().Contains(request.Name.ToLower()))
             .Where(x => x.UserId == userId)
-            .OrderByDescending(x => x.CreatedAt)
+            .ApplyDateFilter(request.DateFilter)
+            .ApplyOrderBy(request.OrderBy, request.OrderDirection)
             .Select(x => new GetAllFinancialPlansResponse(x.Id, x.Name, x.Description, x.CreatedAt, x.UpdatedAt, x.Tags.Select(t => new GetAllFinancialPlanTagsResponse(t.Id, t.Name)).ToList()))
             .ToPaginatedResultAsync(request.Page, request.PageSize, cancellationToken);
 
