@@ -33,29 +33,16 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
             Name = request.Name,
             Description = request?.Description,
             CreatedAt = DateTime.UtcNow,
-            UserId = userId
+            UserId = userId,
+            Status = FinancialPlanStatusEnum.Active,
+            Origin = FinancialPlanOriginEnum.UserCreated
         };
 
         var exists = await _context.FinancialPlans.AnyAsync(x => x.Name.ToLower() == request!.Name.ToLower(), cancellationToken);
 
         if (exists)
         {
-            var duplicateTag = await _context.Tags.FirstOrDefaultAsync(x => x.Name == "Duplicate" && x.UserId == userId, cancellationToken);
-
-            if (duplicateTag is null)
-            {
-                duplicateTag = new Tag()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Duplicate",
-                    CreatedAt = DateTime.UtcNow,
-                    UserId = userId
-                };
-
-                await _context.Tags.AddAsync(duplicateTag, cancellationToken);
-            }
-
-            plan.Tags.Add(duplicateTag);
+            return Result.Failure<CreateFinancialPlanResponse>(new Error("FinancialPlan.Create.Exists", "Financial plan already exists."));
         }
 
         var scene = new FinancialScene()
@@ -87,12 +74,6 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
 
     private CreateFinancialPlanResponse MapToResponse(FinancialPlan plan)
     {
-        var tags = MapTags(plan);
-        return new CreateFinancialPlanResponse(plan.Id, plan.Name, plan?.Description, plan.CreatedAt, plan.UpdatedAt, tags);
-    }
-
-    private List<CreateFinancialPlanTagsResponse> MapTags(FinancialPlan plan)
-    {
-        return plan?.Tags.Select(x => new CreateFinancialPlanTagsResponse(x.Id, x.Name)).ToList() ?? new List<CreateFinancialPlanTagsResponse>();
+        return new CreateFinancialPlanResponse(plan.Id, plan.Name, plan?.Description, plan.CreatedAt, plan.UpdatedAt, plan.Status, plan.Status.ToString());
     }
 }
