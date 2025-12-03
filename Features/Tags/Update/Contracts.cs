@@ -2,4 +2,9 @@
 
 public record UpdateTagRequest(Guid Id, string Name);
 
-public record UpdateTagResponse(Guid Id, string Name);
+public record UpdateTagResponse(
+    Guid Id, 
+    string Name, 
+    DateTime CreatedAt,
+    DateTime UpdatedAt
+);

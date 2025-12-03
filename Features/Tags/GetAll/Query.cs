@@ -30,7 +30,7 @@ public class GetAllTagsQueryHandler : IRequestHandler<GetAllTagsQuery, Result<Pa
         var tags = await _context.Tags
             .Where(x => request.Name == null || x.Name.Contains(request.Name))
             .Where(x => x.UserId == userId)
-            .Select(x => new GetAllTagsResponse(x.Id, x.Name))
+            .Select(x => new GetAllTagsResponse(x.Id, x.Name, x.CreatedAt, x.UpdatedAt))
             .ToPaginatedResultAsync(request.Page, request.PageSize, cancellationToken);
 
         return Result.Success(tags);

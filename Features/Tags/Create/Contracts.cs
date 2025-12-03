@@ -6,5 +6,7 @@ public record CreateTagRequest(
 
 public record CreateTagResponse(
     Guid Id,
-    string Name
+    string Name,
+    DateTime CreatedAt,
+    DateTime UpdatedAt
 );

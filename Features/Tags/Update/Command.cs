@@ -38,6 +38,6 @@ public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, Result<
 
     private UpdateTagResponse MapToResponse(Tag tag)
     {
-        return new UpdateTagResponse(tag.Id, tag.Name);
+        return new UpdateTagResponse(tag.Id, tag.Name, tag.CreatedAt, tag.UpdatedAt);
     }
 }

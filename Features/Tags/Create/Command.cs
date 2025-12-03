@@ -48,6 +48,6 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Result<
 
     private CreateTagResponse MapToResponse(Tag tag)
     {
-        return new CreateTagResponse(tag.Id, tag.Name);
+        return new CreateTagResponse(tag.Id, tag.Name, tag.CreatedAt, tag.UpdatedAt);
     }
 }

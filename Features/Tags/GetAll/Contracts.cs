@@ -8,5 +8,7 @@ public record GetAllTagsRequest(
 
 public record GetAllTagsResponse(
     Guid Id, 
-    string Name
+    string Name,
+    DateTime CreatedAt,
+    DateTime UpdatedAt
 );
