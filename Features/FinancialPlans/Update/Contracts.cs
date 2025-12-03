@@ -5,16 +5,14 @@ namespace SaldoFlex.API.Features.FinancialPlans.Update;
 public record UpdateFinancialPlanRequest (
     Guid Id,
     string? Name,
-    string? Description,
-    FinancialPlanStatusEnum Status = FinancialPlanStatusEnum.Active
+    string? Description
 );
 
 public record UpdateFinancialPlanResponse(
     Guid Id,
-    string? Name,
+    string Name,
     string? Description,
+    string StatusDescription,
     DateTime CreatedAt, 
-    DateTime UpdatedAt,
-    FinancialPlanStatusEnum Status, 
-    string StatusDescription
+    DateTime UpdatedAt
 );

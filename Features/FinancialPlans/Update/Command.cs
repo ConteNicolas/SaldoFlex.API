@@ -11,8 +11,7 @@ namespace SaldoFlex.API.Features.FinancialPlans.Update;
 public record UpdateFinancialPlanCommand(
     Guid Id,
     string? Name,
-    string? Description,
-    FinancialPlanStatusEnum Status
+    string? Description
 ) : IRequest<Result<UpdateFinancialPlanResponse>>;
 
 public class UpdateFinancialPlanCommandHandler : IRequestHandler<UpdateFinancialPlanCommand, Result<UpdateFinancialPlanResponse>>
@@ -36,29 +35,17 @@ public class UpdateFinancialPlanCommandHandler : IRequestHandler<UpdateFinancial
             return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.NotFound", "Financial plan not found."));
         }
 
-        if (plan.Name.ToLower() == request.Name?.ToLower() && plan.Description == request?.Description && plan.Status == request.Status)
-        {
-            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.NoChanges", "There no changes to update."));
-        }
-
-        if (plan.Status == FinancialPlanStatusEnum.Archived)
-        {
-            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Exists", "Cannot update an 'archived' financial plan"));
-        }
-
         if (!string.IsNullOrWhiteSpace(request?.Name) && await _context.FinancialPlans.AnyAsync(x => x.Name.ToLower() == request.Name.ToLower()))
         {
             return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Exists", "Financial plan already exists."));
         }
 
-        var userId = _userContext.GetUserId().GetValueOrDefault();
-
-        if (plan.Status != request.Status)
+        if (plan.Status == FinancialPlanStatusEnum.Archived)
         {
-            plan.Status = request.Status;
+            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Archived", "Financial plan is archived."));
         }
 
-        plan.Name = request.Name ?? plan.Name;
+        plan.Name = request?.Name ?? plan.Name;
         plan.Description = request?.Description ?? plan.Description;
 
         plan.UpdatedAt = DateTime.UtcNow;
@@ -71,6 +58,6 @@ public class UpdateFinancialPlanCommandHandler : IRequestHandler<UpdateFinancial
 
     private UpdateFinancialPlanResponse MapToResponse(FinancialPlan plan)
     {
-        return new UpdateFinancialPlanResponse(plan.Id, plan.Name, plan?.Description, plan.CreatedAt, plan.UpdatedAt, plan.Status, plan.Status.ToString());
+        return new UpdateFinancialPlanResponse(plan.Id, plan.Name, plan?.Description, plan.Status.ToString(), plan.CreatedAt, plan.UpdatedAt);
     }
 }
