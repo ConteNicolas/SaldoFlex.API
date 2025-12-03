@@ -35,14 +35,14 @@ public class UpdateFinancialPlanCommandHandler : IRequestHandler<UpdateFinancial
             return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.NotFound", "Financial plan not found."));
         }
 
-        if (!string.IsNullOrWhiteSpace(request?.Name) && await _context.FinancialPlans.AnyAsync(x => x.Name.ToLower() == request.Name.ToLower()))
-        {
-            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Exists", "Financial plan already exists."));
-        }
-
         if (plan.Status == FinancialPlanStatusEnum.Archived)
         {
-            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Archived", "Financial plan is archived."));
+            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Archived", "This financial plan has been archived and is no longer active."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request?.Name) && plan.Name != request.Name && await _context.FinancialPlans.AnyAsync(x => x.Name.ToLower() == request.Name.ToLower()))
+        {
+            return Result.Failure<UpdateFinancialPlanResponse>(new Error("FinancialPlan.Update.Exists", "The financial plan cannot be updated because a plan with the same name already exists"));
         }
 
         plan.Name = request?.Name ?? plan.Name;
