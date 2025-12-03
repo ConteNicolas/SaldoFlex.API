@@ -1,6 +1,7 @@
 ﻿using FastEndpoints.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SaldoFlex.API.Domain;
 using SaldoFlex.API.Infrastructure.Persistence;
 using SaldoFlex.API.Shared.Models;
 using SaldoFlex.API.Shared.Utils;
@@ -39,11 +40,19 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, Result<SignIn
             opt.User.Claims.Add(("UserId", user.Id.ToString()));
         });
 
+        await UpdateLastLogin(user);
+
         return Result.Success(MapToResponse(token));
     }
 
     private SignInResponse MapToResponse(string token)
     {
         return new SignInResponse(token);
+    }
+
+    private Task UpdateLastLogin(User user)
+    {
+        user.LastLogin = DateTime.UtcNow;
+        return _context.SaveChangesAsync();
     }
 }
