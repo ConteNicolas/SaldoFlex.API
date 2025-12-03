@@ -6,16 +6,36 @@ namespace SaldoFlex.API.Infrastructure.Persistence.Interceptors;
 
 public class AuditInterceptor : SaveChangesInterceptor
 {
-    public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+    public override InterceptionResult<int> SavingChanges(
+        DbContextEventData eventData,
+        InterceptionResult<int> result)
     {
         var context = eventData.Context;
+        if (context is null) return result;
 
-        if (context is null)
+        foreach (var entry in context.ChangeTracker.Entries<BaseEntity>())
         {
-            return result;
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+            }
+
+            if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+            }
         }
 
-        foreach(var entry in context.ChangeTracker.Entries<BaseEntity>())
+        return result;
+    }
+
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+    {
+        var context = eventData.Context;
+        if (context is null) return result;
+
+        foreach (var entry in context.ChangeTracker.Entries<BaseEntity>())
         {
             if (entry.State == EntityState.Added)
             {
