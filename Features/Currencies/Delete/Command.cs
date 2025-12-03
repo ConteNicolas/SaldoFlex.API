@@ -25,6 +25,11 @@ public class DeleteCurrencyCommandHandler : IRequestHandler<DeleteCurrencyComman
             return Result.Failure<Result>(new Error("Currency.Delete.NotFound", "Currency not found."));
         }
 
+        if (await _context.FinancialSceneExpenses.AnyAsync(x => x.CurrencyId == request.Id, cancellationToken))
+        {
+            return Result.Failure<Result>(new Error("Currency.Delete.HasExpenses", "Currency in use and has expenses."));
+        }
+
         _context.Currencies.Remove(currency);
         await _context.SaveChangesAsync(cancellationToken);
 
