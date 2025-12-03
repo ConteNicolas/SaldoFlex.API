@@ -33,6 +33,6 @@ public class GetFinancialPlanByIdQueryHandler : IRequestHandler<GetFinancialPlan
 
     private GetFinancialPlanByIdResponse MapToResponse(FinancialPlan plan)
     {
-        return new GetFinancialPlanByIdResponse(plan.Id, plan.Name, plan?.Description, plan.CreatedAt, plan.UpdatedAt, plan.Status, plan.Status.ToString());
+        return new GetFinancialPlanByIdResponse(plan.Id, plan.Name, plan?.Description, plan.Status.ToString(), plan.CreatedAt, plan.UpdatedAt);
     }
 }

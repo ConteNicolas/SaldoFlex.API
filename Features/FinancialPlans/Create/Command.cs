@@ -74,6 +74,6 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
 
     private CreateFinancialPlanResponse MapToResponse(FinancialPlan plan)
     {
-        return new CreateFinancialPlanResponse(plan.Id, plan.Name, plan?.Description, plan.CreatedAt, plan.UpdatedAt, plan.Status, plan.Status.ToString());
+        return new CreateFinancialPlanResponse(plan.Id, plan.Name, plan?.Description, plan.Status.ToString(), plan.CreatedAt, plan.UpdatedAt);
     }
 }

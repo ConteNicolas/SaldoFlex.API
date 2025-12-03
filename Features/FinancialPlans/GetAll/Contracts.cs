@@ -13,11 +13,10 @@ public record GetAllFinancialPlansRequest(
 );
 
 public record GetAllFinancialPlansResponse(
-    Guid Id, 
+    Guid Id,
     string Name,
     string? Description,
+    string StatusDescription,
     DateTime CreatedAt,
-    DateTime UpdatedAt,
-    FinancialPlanStatusEnum Status,
-    string StatusDescription
+    DateTime UpdatedAt
 );

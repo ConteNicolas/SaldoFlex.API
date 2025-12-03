@@ -37,7 +37,7 @@ public class GetAllFinancialPlansQueryHandler : IRequestHandler<GetAllFinancialP
             .Where(x => x.UserId == userId)
             .ApplyDateFilter(request.DateFilter)
             .ApplyOrderBy(request.OrderBy, request.OrderDirection)
-            .Select(x => new GetAllFinancialPlansResponse(x.Id, x.Name, x.Description, x.CreatedAt, x.UpdatedAt, x.Status, x.Status.ToString()))
+            .Select(x => new GetAllFinancialPlansResponse(x.Id, x.Name, x.Description, x.Status.ToString(), x.CreatedAt, x.UpdatedAt))
             .ToPaginatedResultAsync(request.Page, request.PageSize, cancellationToken);
 
         return Result.Success(financialPlans);
