@@ -12,7 +12,7 @@ using SaldoFlex.API.Infrastructure.Persistence;
 namespace SaldoFlex.API.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251202032120_InitMigration")]
+    [Migration("20251203043430_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
