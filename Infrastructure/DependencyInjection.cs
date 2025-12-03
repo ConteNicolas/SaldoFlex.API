@@ -3,8 +3,8 @@ using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 using SaldoFlex.API.Infrastructure.Persistence;
+using SaldoFlex.API.Infrastructure.Persistence.Interceptors;
 using SaldoFlex.API.Shared.Context;
-using SaldoFlex.API.Shared.Middlewares.Filters;
 using SaldoFlex.API.Shared.Services;
 
 namespace SaldoFlex.API.Infrastructure;
@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(opt =>
         {
             opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+            opt.AddInterceptors(new AuditInterceptor());
         });
 
         return services;
