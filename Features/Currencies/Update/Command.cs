@@ -53,6 +53,6 @@ public class UpdateCurrencyCommandHandler : IRequestHandler<UpdateCurrencyComman
 
     private UpdateCurrencyResponse MapToResponse(Currency currency)
     {
-        return new UpdateCurrencyResponse(currency.Id, currency.Code, currency.Symbol, currency.Description, currency.IsDefault);
+        return new UpdateCurrencyResponse(currency.Id, currency.Code, currency.Symbol, currency.Description, currency.IsDefault, currency.CreatedAt, currency.UpdatedAt);
     }
 }

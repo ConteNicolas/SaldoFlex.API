@@ -15,5 +15,7 @@ public record GetAllCurrenciesResponse(
     string Code,
     string Symbol,
     string Description,
-    bool IsDefault
+    bool IsDefault,
+    DateTime CreatedAt,
+    DateTime UpdatedAt
 );

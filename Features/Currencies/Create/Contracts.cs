@@ -8,8 +8,9 @@ public record CreateCurrencyRequest(
 
 public record CreateCurrencyResponse(
   Guid Id,
+  string Symbol,
   string Code,
   string Description,
-  string Symbol,
-  bool IsDefault
+  DateTime CreatedAt,
+  DateTime UpdatedAt
 );

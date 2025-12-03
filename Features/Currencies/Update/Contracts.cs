@@ -13,5 +13,7 @@ public record UpdateCurrencyResponse(
     string Description,
     string Symbol,
     string Code,
-    bool IsDefault
+    bool IsDefault,
+    DateTime CreatedAt,
+    DateTime UpdatedAt
 );
