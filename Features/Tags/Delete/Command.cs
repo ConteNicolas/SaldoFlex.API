@@ -18,6 +18,11 @@ public record class DeleteTagCommandHandler(ApplicationDbContext context) : IReq
             return Result.Failure<Result>(new Error("Tag.Delete.NotFound", "Tag not found."));
         }
 
+        if (await context.FinancialSceneExpenses.AnyAsync(x => x.Tags.Any(t => t.Id == tag.Id), cancellationToken))
+        {
+            return Result.Failure<Result>(new Error("Tag.Delete.InUse", "Tag is in use."));
+        }
+
         context.Tags.Remove(tag);
         await context.SaveChangesAsync(cancellationToken);
 
