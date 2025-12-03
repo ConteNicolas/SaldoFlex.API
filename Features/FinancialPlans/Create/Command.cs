@@ -32,7 +32,6 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
             Id = Guid.NewGuid(),
             Name = request.Name,
             Description = request?.Description,
-            CreatedAt = DateTime.UtcNow,
             UserId = userId,
             Status = FinancialPlanStatusEnum.Active,
             Origin = FinancialPlanOriginEnum.UserCreated
@@ -48,7 +47,6 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
         var scene = new FinancialScene()
         {
             Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow,
             UserId = userId
         };
 
@@ -61,7 +59,6 @@ public class CreateFinancialPlanCommandHandler : IRequestHandler<CreateFinancial
             Name = "General expenses",
             FinancialSceneId = scene.Id,
             FinancialScene = scene,
-            CreatedAt = DateTime.UtcNow,
             UserId = userId
         });
 
