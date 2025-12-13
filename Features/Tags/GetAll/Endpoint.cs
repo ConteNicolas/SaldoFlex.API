@@ -30,6 +30,6 @@ public class GetAllTagsEndpoint : Endpoint<GetAllTagsRequest>
 
     private GetAllTagsQuery MapToQuery(GetAllTagsRequest request)
     {
-        return new GetAllTagsQuery(request.Page, request.PageSize, request.Name);
+        return new GetAllTagsQuery(request.Page, request.PageSize, request.Name, request.DateFilter, request.OrderBy, request.OrderDirection);
     }
 }
